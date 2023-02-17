@@ -57,6 +57,7 @@ jobs:
               --ignore-crawlers \
               --ignore-status=301 \
               --ignore-status=302 \
+              --anonymize-ip \
               --output public/index.html
 
       - name: Setup Pages
