@@ -32,7 +32,9 @@ jobs:
         run: mkdir -p logs public
 
       - name: Download log files
-        run: aws s3 sync s3://major.io-logs/ logs/
+        run: |
+          aws s3 sync s3://major.io-logs/ logs/
+          find logs -name "*.gz"
 
       - name: Install goaccess
         run: |
