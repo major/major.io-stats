@@ -34,21 +34,19 @@ jobs:
       - name: Download log files
         run: aws s3 sync s3://major.io-logs/ logs/
 
-      - name: Decompress log files
-        run: find logs/ -name "*.gz" -exec gunzip {} \;
-
       - name: Install goaccess
         run: |
           wget -O - https://deb.goaccess.io/gnugpg.key | gpg --dearmor \
               | sudo tee /usr/share/keyrings/goaccess.gpg >/dev/null
           echo "deb [signed-by=/usr/share/keyrings/goaccess.gpg arch=$(dpkg --print-architecture)] https://deb.goaccess.io/ $(lsb_release -cs) main" \
               | sudo tee /etc/apt/sources.list.d/goaccess.list
-          sudo apt-get update
-          sudo apt-get install -y goaccess
+          sudo apt-get -q update
+          sudo apt-get -q install -y goaccess
 
       - name: Run goaccess
         run: |
-          cat logs/* | \
+          find logs -name "*.gz" | \
+            xargs zcat | \
             goaccess \
             --log-format CLOUDFRONT \
             --date-format CLOUDFRONT \
