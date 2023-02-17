@@ -54,7 +54,6 @@ jobs:
               --log-format CLOUDFRONT \
               --date-format CLOUDFRONT \
               --time-format CLOUDFRONT \
-              --ignore-crawlers \
               --ignore-status=301 \
               --ignore-status=302 \
               --anonymize-ip \
