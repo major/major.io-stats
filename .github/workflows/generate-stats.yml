@@ -58,6 +58,8 @@ jobs:
               --ignore-status=301 \
               --ignore-status=302 \
               --anonymize-ip \
+              --http-protocol=no \
+              --http-method=no \
               --output public/index.html
 
       - name: Setup Pages
