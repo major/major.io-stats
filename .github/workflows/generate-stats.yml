@@ -55,7 +55,6 @@ jobs:
               --ignore-crawlers \
               --ignore-status=301 \
               --ignore-status=302 \
-              --keep-last=28 \
               --output public/index.html
 
       - name: Setup Pages
