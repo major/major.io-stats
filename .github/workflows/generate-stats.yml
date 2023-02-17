@@ -60,6 +60,7 @@ jobs:
               --anonymize-ip \
               --http-protocol=no \
               --http-method=no \
+              --no-query-string \
               --output public/index.html
 
       - name: Setup Pages
