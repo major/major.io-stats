@@ -47,7 +47,7 @@ jobs:
         run: |
           find logs -name "*.gz" | \
             xargs gzcat | \
-            goaccess \
+            goaccess - \
               --log-format CLOUDFRONT \
               --date-format CLOUDFRONT \
               --time-format CLOUDFRONT \
