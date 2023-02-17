@@ -32,9 +32,7 @@ jobs:
         run: mkdir -p logs public
 
       - name: Download log files
-        run: |
-          aws s3 sync s3://major.io-logs/ logs/
-          find logs -name "*.gz"
+        run: aws s3 sync s3://major.io-logs/ logs/
 
       - name: Install goaccess
         run: |
@@ -47,10 +45,8 @@ jobs:
 
       - name: Run goaccess
         run: |
-          #/bin/bash
-          set -euxo pipefail
           find logs -name "*.gz" | \
-            xargs zcat | \
+            xargs gzcat | \
             goaccess \
               --log-format CLOUDFRONT \
               --date-format CLOUDFRONT \
