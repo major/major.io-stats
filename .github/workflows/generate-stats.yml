@@ -38,7 +38,7 @@ jobs:
         run: |
           #!/bin/bash
           if [ -e logs.tar ]; then
-            tar -xvf logs.tar
+            tar -xf logs.tar
           fi
 
       - name: Configure AWS credentials
