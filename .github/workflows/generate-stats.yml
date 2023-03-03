@@ -29,11 +29,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Cache logs
-        uses: actions/cache@v3
-        with:
-          path: logs/
-          key: logs
+      # - name: Download logs from artifact
+      #   uses: dawidd6/action-download-artifact@v2
+      #   with:
+      #     name: logs
+      #     path: logs
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1.7.0
@@ -76,6 +76,12 @@ jobs:
       - name: Setup Pages
         id: pages
         uses: actions/configure-pages@v3
+
+      - name: Store logs in artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: logs
+          path: logs/*
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
