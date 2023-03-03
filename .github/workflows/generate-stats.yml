@@ -77,6 +77,15 @@ jobs:
         id: pages
         uses: actions/configure-pages@v3
 
+      - name: Create log tarball
+        run: tar -cvf logs.tar logs
+
+      - name: Store log tarball in artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: logs-tarball
+          path: logs.tar
+
       - name: Store logs in artifact
         uses: actions/upload-artifact@v3
         with:
