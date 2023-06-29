@@ -37,7 +37,8 @@ jobs:
       - name: Extract logs
         run: |
           #!/bin/bash
-          if [ -e logs.tar ]; then
+          if [ -e logs.tar.zst ]; then
+            zstd -d -rm logs.tar.zst
             tar -xf logs.tar
           fi
 
@@ -84,13 +85,15 @@ jobs:
         uses: actions/configure-pages@v3
 
       - name: Create log tarball
-        run: tar -cf logs.tar logs
+        run: |
+          tar -cf logs.tar logs
+          zstd --rm -T0 logs.tar
 
       - name: Store log tarball in artifact
         uses: actions/upload-artifact@v3
         with:
           name: logs-tarball
-          path: logs.tar
+          path: logs.tar.zst
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
