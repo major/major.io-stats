@@ -37,7 +37,6 @@ jobs:
       - name: Extract logs
         run: |
           #!/bin/bash
-          sudo apt update && sudo apt install zstd -y
           if [ -e logs.tar.zst ]; then
             zstd -d --rm logs.tar.zst
             tar -xf logs.tar
