@@ -74,6 +74,7 @@ jobs:
               --time-format CLOUDFRONT \
               --ignore-status=301 \
               --ignore-status=302 \
+              --ignore-crawlers \
               --anonymize-ip \
               --http-protocol=no \
               --http-method=no \
