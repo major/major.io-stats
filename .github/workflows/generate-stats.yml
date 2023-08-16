@@ -55,20 +55,11 @@ jobs:
       - name: Download log files
         run: aws s3 sync --size-only s3://major.io-logs/ logs/
 
-      - name: Install goaccess
-        run: |
-          wget -O - https://deb.goaccess.io/gnugpg.key | gpg --dearmor \
-              | sudo tee /usr/share/keyrings/goaccess.gpg >/dev/null
-          echo "deb [signed-by=/usr/share/keyrings/goaccess.gpg arch=$(dpkg --print-architecture)] https://deb.goaccess.io/ $(lsb_release -cs) main" \
-              | sudo tee /etc/apt/sources.list.d/goaccess.list
-          sudo apt-get -q update
-          sudo apt-get -q install -y goaccess
-
       - name: Run goaccess
         run: |
           find logs -name "*.gz" | \
             xargs zcat | \
-            goaccess - \
+            docker run --rm -i -e LANG=$LANG docker.io/allinurl/goaccess \
               --log-format CLOUDFRONT \
               --date-format CLOUDFRONT \
               --time-format CLOUDFRONT \
@@ -80,7 +71,7 @@ jobs:
               --http-protocol=no \
               --http-method=no \
               --no-query-string \
-              --output public/index.html
+              --output html - > public/index.html
 
       - name: Setup Pages
         id: pages
