@@ -90,13 +90,12 @@ jobs:
       - name: Create log tarball
         run: |
           tar -cf logs.tar logs
-          zstd --rm -19 -v -T0 logs.tar
 
       - name: Store log tarball in artifact
         uses: actions/upload-artifact@v4
         with:
           name: logs-tarball
-          path: logs.tar.zst
+          path: logs.tar
           compression-level: 0
           retention-days: 2
 
