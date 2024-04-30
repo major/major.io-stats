@@ -59,8 +59,7 @@ jobs:
       - name: Prepare geoip databases
         run: |
           pushd geoip
-            tar --zstd -xvf geoip.tar.zst
-          popd
+          tar --zstd -xf geoip.tar.zst
 
       - name: Run goaccess
         run: |
