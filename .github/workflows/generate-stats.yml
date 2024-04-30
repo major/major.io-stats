@@ -55,6 +55,9 @@ jobs:
       - name: Download log files
         run: aws s3 sync --size-only s3://major.io-logs/ logs/
 
+      - name: Prepare geoip databases
+        run: tar --zstd -xvf geoip.tar.zst
+
       - name: Run goaccess
         run: |
           find logs -name "*.gz" | \
@@ -67,10 +70,14 @@ jobs:
               --ignore-status=301 \
               --ignore-status=302 \
               --ignore-crawlers \
+              --real-os \
               --anonymize-ip \
-              --http-protocol=no \
-              --http-method=no \
+              --http-protocol=yes \
+              --http-method=yes \
               --no-query-string \
+              --geoip-database GeoLite2-City.mmdb \
+              --geoip-database GeoLite2-Country.mmdb \
+              --geoip-database GeoLite2-ASN.mmdb \
               --output html - > public/index.html
 
       - name: Setup Pages
@@ -87,6 +94,7 @@ jobs:
         with:
           name: logs-tarball
           path: logs.tar.zst
+          compression-level: 0
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
