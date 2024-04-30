@@ -90,7 +90,7 @@ jobs:
       - name: Create log tarball
         run: |
           tar -cf logs.tar logs
-          zstd --rm -T0 logs.tar
+          zstd --rm -19 -v -T0 logs.tar
 
       - name: Store log tarball in artifact
         uses: actions/upload-artifact@v4
