@@ -57,13 +57,16 @@ jobs:
         run: aws s3 sync --size-only s3://major.io-logs/ logs/
 
       - name: Prepare geoip databases
-        run: tar --zstd -xvf geoip.tar.zst
+        run: |
+          pushd geoip
+            tar --zstd -xvf geoip.tar.zst
+          popd
 
       - name: Run goaccess
         run: |
           find logs -name "*.gz" | \
             xargs zcat | \
-            docker run --rm -i -e LANG=$LANG docker.io/allinurl/goaccess \
+            docker run --rm -i -v ./geoip:/geoip:ro -e LANG=$LANG docker.io/allinurl/goaccess \
               --log-format CLOUDFRONT \
               --date-format CLOUDFRONT \
               --time-format CLOUDFRONT \
@@ -76,9 +79,9 @@ jobs:
               --http-protocol=yes \
               --http-method=yes \
               --no-query-string \
-              --geoip-database GeoLite2-City.mmdb \
-              --geoip-database GeoLite2-Country.mmdb \
-              --geoip-database GeoLite2-ASN.mmdb \
+              --geoip-database /geoip/GeoLite2-City.mmdb \
+              --geoip-database /geoip/GeoLite2-Country.mmdb \
+              --geoip-database /geoip/GeoLite2-ASN.mmdb \
               --output html - > public/index.html
 
       - name: Setup Pages
