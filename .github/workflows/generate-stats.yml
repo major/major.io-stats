@@ -29,19 +29,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
 
-      - name: Download logs from artifact
-        uses: dawidd6/action-download-artifact@v11
+      - name: Restore logs from cache
+        uses: actions/cache/restore@v4
         with:
-          name: logs-tarball
-          if_no_artifact_found: warn
-
-      - name: Extract logs
-        run: |
-          #!/bin/bash
-          if [ -e logs.tar.zst ]; then
-            zstd -d --rm logs.tar.zst
-            tar -xf logs.tar
-          fi
+          path: logs
+          key: logs-cache-${{ github.run_id }}
+          restore-keys: |
+            logs-cache-
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@7474bc4690e29a8392af63c5b98e7449536d5c3a # v4.3.1
@@ -54,12 +48,35 @@ jobs:
         run: mkdir -p logs public
 
       - name: Download log files
-        run: aws s3 sync --size-only s3://major.io-logs/ logs/
+        run: |
+          #!/bin/bash
+          # Create a marker file to track the last sync time
+          MARKER_FILE="logs/.last-sync"
+
+          # If we have previously downloaded logs, only sync files newer than the marker
+          if [ -f "$MARKER_FILE" ]; then
+            echo "Incremental sync: downloading only new files since last run"
+            LAST_SYNC=$(cat "$MARKER_FILE")
+            # Use --exclude with --include to filter by modification time isn't directly supported,
+            # so we'll list files first and download only newer ones
+            aws s3 ls s3://major.io-logs/ --recursive | \
+              awk -v last="$LAST_SYNC" '$1" "$2 > last {print $4}' | \
+              while read -r file; do
+                aws s3 cp "s3://major.io-logs/$file" "logs/$file"
+              done
+          else
+            echo "Initial sync: downloading all log files"
+            aws s3 sync --size-only s3://major.io-logs/ logs/
+          fi
+
+          # Update the marker file with current timestamp
+          date -u '+%Y-%m-%d %H:%M:%S' > "$MARKER_FILE"
 
       - name: Prepare geoip databases
         run: |
           pushd geoip
           tar --zstd -xf geoip.tar.zst
+          popd
 
       - name: Run goaccess
         run: |
@@ -87,17 +104,11 @@ jobs:
         id: pages
         uses: actions/configure-pages@v5
 
-      - name: Create log tarball
-        run: |
-          tar -cf logs.tar logs
-
-      - name: Store log tarball in artifact
-        uses: actions/upload-artifact@v4
+      - name: Save logs to cache
+        uses: actions/cache/save@v4
         with:
-          name: logs-tarball
-          path: logs.tar
-          compression-level: 0
-          retention-days: 2
+          path: logs
+          key: logs-cache-${{ github.run_id }}
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
