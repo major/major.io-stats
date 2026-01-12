@@ -24,10 +24,10 @@ jobs:
       TZ: America/Chicago
     steps:
       - name: Checkout
-        uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6
+        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6
 
       - name: Restore logs from cache
-        uses: actions/cache/restore@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
+        uses: actions/cache/restore@9255dc7a253b0ccc959486e2bca901246202afeb # v5
         with:
           path: logs
           key: logs-cache-${{ github.run_id }}
@@ -102,7 +102,7 @@ jobs:
         uses: actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b # v5
 
       - name: Save logs to cache
-        uses: actions/cache/save@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
+        uses: actions/cache/save@9255dc7a253b0ccc959486e2bca901246202afeb # v5
         with:
           path: logs
           key: logs-cache-${{ github.run_id }}
