@@ -1,16 +1,63 @@
 {
-    "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-    "extends": ["config:recommended", ":automergeAll", "config:best-practices"],
-    "prConcurrentLimit": 0,
-    "branchConcurrentLimit": 0,
-    "platformAutomerge": true,
-    "git-submodules": {
-        "enabled": true
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:best-practices",
+    ":enableVulnerabilityAlertsWithLabel(security)",
+    "group:monorepos",
+    "group:recommended"
+  ],
+  "schedule": [
+    "before 5am on monday"
+  ],
+  "timezone": "America/Chicago",
+  "prConcurrentLimit": 0,
+  "branchConcurrentLimit": 0,
+  "labels": [
+    "dependencies"
+  ],
+  "platformAutomerge": true,
+  "git-submodules": {
+    "enabled": true
+  },
+  "customManagers": [
+    {
+      "customType": "regex",
+      "description": "Update Docker images in workflow shell commands",
+      "managerFilePatterns": [
+        "/^\\.github/workflows/.*\\.ya?ml$/"
+      ],
+      "matchStrings": [
+        "docker\\.io\\/(?<depName>[a-z0-9]+(?:[._-][a-z0-9]+)*\\/[a-z0-9]+(?:[._-][a-z0-9]+)*):(?<currentValue>[0-9]+(?:\\.[0-9]+)*)"
+      ],
+      "datasourceTemplate": "docker"
+    }
+  ],
+  "packageRules": [
+    {
+      "description": "Automerge all GitHub Actions updates",
+      "matchManagers": [
+        "github-actions"
+      ],
+      "automerge": true,
+      "automergeType": "pr"
     },
-    "packageRules": [
-        {
-            "matchManagers": ["github-actions"],
-            "automerge": true
-        }
-    ]
+    {
+      "description": "Group all GitHub Actions updates",
+      "matchManagers": [
+        "github-actions"
+      ],
+      "groupName": "GitHub Actions"
+    },
+    {
+      "description": "Automerge Docker image updates",
+      "matchManagers": [
+        "custom.regex"
+      ],
+      "matchDatasources": [
+        "docker"
+      ],
+      "automerge": true,
+      "automergeType": "pr"
+    }
+  ]
 }
