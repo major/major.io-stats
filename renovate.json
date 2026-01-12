@@ -1,6 +1,8 @@
 {
     "$schema": "https://docs.renovatebot.com/renovate-schema.json",
     "extends": ["config:recommended", ":automergeAll", "config:best-practices"],
+    "prConcurrentLimit": 0,
+    "branchConcurrentLimit": 0,
     "platformAutomerge": true,
     "git-submodules": {
         "enabled": true
