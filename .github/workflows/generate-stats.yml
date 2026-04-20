@@ -27,7 +27,7 @@ jobs:
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
 
       - name: Restore logs from cache
-        uses: actions/cache/restore@668228422ae6a00e4ad889ee87cd7109ec5666a7 # v5
+        uses: actions/cache/restore@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5
         with:
           path: logs
           key: logs-cache-${{ github.run_id }}
@@ -35,7 +35,7 @@ jobs:
             logs-cache-
 
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@8df5847569e6427dd6c4fb1cf565c83acfa8afa7 # v6.0.0
+        uses: aws-actions/configure-aws-credentials@ec61189d14ec14c8efccab744f656cffd0e33f37 # v6.1.0
         with:
           role-to-assume: arn:aws:iam::911986281031:role/github-actions-major.io-stats
           role-duration-seconds: 900
@@ -102,7 +102,7 @@ jobs:
         uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6
 
       - name: Save logs to cache
-        uses: actions/cache/save@668228422ae6a00e4ad889ee87cd7109ec5666a7 # v5
+        uses: actions/cache/save@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5
         with:
           path: logs
           key: logs-cache-${{ github.run_id }}
